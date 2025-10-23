@@ -5,9 +5,8 @@
     <title>User Dashboard</title>
 </head>
 <body>
-    <h2>Welcome, {{ username }}</h2>
-    <p>Watch Earnings: ₱{{ watch_earnings }}</p>
-    <p>Referral Earnings: ₱{{ referral_earnings }}</p>
-    <p>Total Earnings: ₱{{ watch_earnings + referral_earnings }}</p>
+    <h2>Welcome, {{ username if username else 'User' }}</h2>
+    <p>Watch Earnings: ₱{{ watch_earnings if watch_earnings else '0.00' }}</p>
+    <p>Referral Earnings: ₱{{ referral_earnings if referral_earnings else '0.00' }}</p>
 </body>
 </html>

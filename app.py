@@ -4,21 +4,23 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-app.secret_key = 'secret123'
-
-@app.route('/')
-def home():
-    session['user_id'] = 1
-    return redirect('/dashboard')
+app.secret_key = 'secret'
 
 @app.route('/dashboard')
 def dashboard():
-    conn = sqlite3.connect('earntowatch.db')
-    c = conn.cursor()
-    c.execute("SELECT username, watch_earnings, referral_earnings FROM users WHERE id = ?", (session['user_id'],))
-    user = c.fetchone()
-    conn.close()
-    return render_template('user_dashboard.html', username=user[0], watch_earnings=user[1], referral_earnings=user[2])
+    try:
+        conn = sqlite3.connect('earntowatch.db')
+        c = conn.cursor()
+        user_id = session.get('user_id', 1)
+        c.execute("SELECT username, watch_earnings, referral_earnings FROM users WHERE id = ?", (user_id,))
+        user = c.fetchone()
+        conn.close()
+        if user:
+            return render_template('user_dashboard.html', username=user[0], watch_earnings=user[1], referral_earnings=user[2])
+        else:
+            return render_template('user_dashboard.html')
+    except Exception as e:
+        return f"Error loading dashboard: {str(e)}"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
